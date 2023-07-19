@@ -1,6 +1,6 @@
 [package]
 name = "wrapped_slab_derive"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 authors = ["Louis Wyborn <louiswyborn@gmail.com>"]
 rust-version = "1.62"

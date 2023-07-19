@@ -1,3 +1,8 @@
+Version 0.1.1 (2023-07-19)
+==========================
+
+- Minor change to allow re-exporting wrapped_slab from other local crates.
+
 Version 0.1.0 (2023-07-19)
 ==========================
 
