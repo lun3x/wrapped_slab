@@ -18,6 +18,12 @@ fn test_unit_struct() {
     assert_eq!(val.0, "testing");
 
     assert_eq!(slab.len(), 0);
+
+    let next_entry: TestUnitStructVacantEntry = slab.vacant_entry();
+    let next_key: TestUnitStructKey = next_entry.key();
+    let next_entry_ref: &mut TestUnitStruct =
+        next_entry.insert(TestUnitStruct(format!("{next_key:?}")));
+    assert_eq!(next_entry_ref.0, format!("{next_key:?}"))
 }
 
 #[derive(WrappedSlab)]
@@ -42,6 +48,13 @@ fn test_struct() {
     assert_eq!(val.field1, "testing");
 
     assert_eq!(slab.len(), 0);
+
+    let next_entry: TestStructVacantEntry = slab.vacant_entry();
+    let next_key: TestStructKey = next_entry.key();
+    let next_entry_ref: &mut TestStruct = next_entry.insert(TestStruct {
+        field1: format!("{next_key:?}"),
+    });
+    assert_eq!(next_entry_ref.field1, format!("{next_key:?}"))
 }
 
 #[derive(WrappedSlab, PartialEq, Debug)]
@@ -64,4 +77,13 @@ fn test_enum() {
     assert_eq!(val, TestEnum::VariantOne("testing".into()));
 
     assert_eq!(slab.len(), 0);
+
+    let next_entry: TestEnumVacantEntry = slab.vacant_entry();
+    let next_key: TestEnumKey = next_entry.key();
+    let next_entry_ref: &mut TestEnum =
+        next_entry.insert(TestEnum::VariantOne(format!("{next_key:?}")));
+    assert_eq!(
+        next_entry_ref,
+        &mut TestEnum::VariantOne(format!("{next_key:?}"))
+    )
 }

@@ -15,5 +15,10 @@ fn main() {
     let mut slab = TestUnitStructSlab::default();
     let key: TestUnitStructKey = slab.insert(TestUnitStruct("testing".into()));
     let val: Option<&TestUnitStruct> = slab.get(key);
+    let next_entry: TestUnitStructVacantEntry = slab.vacant_entry();
+    let next_key: TestUnitStructKey = next_entry.key();
+    let next_entry_ref: &mut TestUnitStruct = next_entry.insert(TestUnitStruct(format!("{next_key:?}")));
+
+    // See wrapped_slab/tests/ for more examples
 }
 ```
