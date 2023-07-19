@@ -18,9 +18,9 @@ pub fn wrapped_slab_derive(input: proc_macro::TokenStream) -> proc_macro::TokenS
 
     let expanded = quote! {
         #[derive(Default)]
-        #element_vis struct #slab_name(::wrapped_slab::slab::Slab<#element_name>);
+        #element_vis struct #slab_name(wrapped_slab::slab::Slab<#element_name>);
 
-        #element_vis struct #vacant_entry_name<'a>(::wrapped_slab::slab::VacantEntry<'a, #element_name>);
+        #element_vis struct #vacant_entry_name<'a>(wrapped_slab::slab::VacantEntry<'a, #element_name>);
 
         #[derive(Debug, Default, PartialEq, Eq, PartialOrd, Ord, Hash, Clone, Copy)]
         #element_vis struct #key_name(usize);
@@ -37,11 +37,11 @@ pub fn wrapped_slab_derive(input: proc_macro::TokenStream) -> proc_macro::TokenS
 
         impl #slab_name {
             pub const fn new() -> Self {
-                Self(::wrapped_slab::slab::Slab::new())
+                Self(wrapped_slab::slab::Slab::new())
             }
 
             pub fn with_capacity(capacity: usize) -> Self {
-                Self(::wrapped_slab::slab::Slab::with_capacity(capacity))
+                Self(wrapped_slab::slab::Slab::with_capacity(capacity))
             }
 
             pub fn capacity(&self) -> usize {
