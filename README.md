@@ -2,7 +2,7 @@
 
 [Also available on crates.io.](https://crates.io/crates/wrapped_slab)
 
-Very simple Rust library useful when you want stronger type guarantees than Slab's usize keys. Generates `TSlab(Slab<T>)` that accepts `TKey` instead of `usize`. `TVacantEntry(VacantEntry<T>)` is also generated along the same lines.
+Very simple Rust library useful when you want stronger type guarantees than Slab's `usize` keys. Generates `TSlab(Slab<T>)` that accepts `TKey` instead of `usize`. `TVacantEntry(VacantEntry<T>)` is also generated along the same lines.
 
 ## Example
 ```rust
