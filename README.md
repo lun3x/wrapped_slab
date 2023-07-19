@@ -5,6 +5,7 @@
 Very simple Rust library useful when you want stronger type guarantees than Slab's `usize` keys. Generates `TSlab(Slab<T>)` that accepts `TKey` instead of `usize`. `TVacantEntry(VacantEntry<T>)` is also generated along the same lines.
 
 ## Example
+
 ```rust
 use wrapped_slab::WrappedSlab;
 
@@ -22,3 +23,7 @@ fn main() {
     // See wrapped_slab/tests/ for more examples
 }
 ```
+
+## Warning
+
+This is a very early version, however the aim is to just translate the Slab API 1-1. Currently the only things missing are Iter, IterMut, drain, and retain.
