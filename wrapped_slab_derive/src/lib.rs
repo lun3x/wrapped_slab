@@ -41,6 +41,12 @@ pub fn wrapped_slab_derive(input: proc_macro::TokenStream) -> proc_macro::TokenS
         #[derive(Debug)]
         #element_vis struct #iter_name<'a>(wrapped_slab::slab::Iter<'a, #element_name>);
 
+        #[derive(Debug)]
+        #element_vis struct #iter_mut_name<'a>(wrapped_slab::slab::IterMut<'a, #element_name>);
+
+        #[derive(Debug)]
+        #element_vis struct #into_iter_name(wrapped_slab::slab::IntoIter<#element_name>);
+
         impl<'a> Iterator for #iter_name<'a> {
             type Item = (#key_name, &'a #element_name);
 
@@ -52,9 +58,6 @@ pub fn wrapped_slab_derive(input: proc_macro::TokenStream) -> proc_macro::TokenS
                 self.0.size_hint()
             }
         }
-
-        #[derive(Debug)]
-        #element_vis struct #iter_mut_name<'a>(wrapped_slab::slab::IterMut<'a, #element_name>);
 
         impl<'a> Iterator for #iter_mut_name<'a> {
             type Item = (#key_name, &'a mut #element_name);
@@ -68,9 +71,6 @@ pub fn wrapped_slab_derive(input: proc_macro::TokenStream) -> proc_macro::TokenS
             }
         }
 
-        #[derive(Debug)]
-        #element_vis struct #into_iter_name(wrapped_slab::slab::IntoIter<#element_name>);
-
         impl Iterator for #into_iter_name {
             type Item = (#key_name, #element_name);
 
@@ -80,15 +80,6 @@ pub fn wrapped_slab_derive(input: proc_macro::TokenStream) -> proc_macro::TokenS
 
             fn size_hint(&self) -> (usize, Option<usize>) {
                 self.0.size_hint()
-            }
-        }
-
-        impl IntoIterator for #slab_name {
-            type Item = (#key_name, #element_name);
-            type IntoIter = #into_iter_name;
-
-            fn into_iter(self) -> Self::IntoIter {
-                #into_iter_name(self.0.into_iter())
             }
         }
 
@@ -107,6 +98,15 @@ pub fn wrapped_slab_derive(input: proc_macro::TokenStream) -> proc_macro::TokenS
 
             fn into_iter(self) -> Self::IntoIter {
                 self.iter_mut()
+            }
+        }
+
+        impl IntoIterator for #slab_name {
+            type Item = (#key_name, #element_name);
+            type IntoIter = #into_iter_name;
+
+            fn into_iter(self) -> Self::IntoIter {
+                #into_iter_name(self.0.into_iter())
             }
         }
 
@@ -205,6 +205,10 @@ pub fn wrapped_slab_derive(input: proc_macro::TokenStream) -> proc_macro::TokenS
 
             pub fn iter_mut(&mut self) -> #iter_mut_name<'_> {
                 #iter_mut_name(self.0.iter_mut())
+            }
+
+            pub fn drain(&mut self) -> wrapped_slab::slab::Drain<'_, #element_name> {
+                self.0.drain()
             }
         }
     };

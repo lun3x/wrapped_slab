@@ -160,3 +160,21 @@ fn test_enum() {
     assert_eq!(s, TestEnum::VariantTwo);
     assert_eq!(iter.next(), None);
 }
+
+#[test]
+fn test_drain() {
+    let mut slab = TestEnumSlab::with_capacity(32);
+    slab.reserve(64);
+    assert_eq!(slab.capacity(), 64);
+
+    slab.insert(TestEnum::VariantTwo);
+
+    let mut drain = slab.drain();
+    assert_eq!(drain.len(), 1);
+    let s = drain.next().unwrap();
+    assert_eq!(s, TestEnum::VariantTwo);
+    assert_eq!(drain.len(), 0);
+    drop(drain);
+
+    assert_eq!(slab.len(), 0);
+}
