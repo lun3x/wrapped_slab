@@ -123,6 +123,14 @@ pub fn wrapped_slab_derive(input: proc_macro::TokenStream) -> proc_macro::TokenS
             pub fn contains(&self, key: #key_name) -> bool {
                 self.0.contains(key.0)
             }
+
+            pub fn iter(&self) -> wrapped_slab::slab::Iter<'_, #element_name> {
+                self.0.iter()
+            }
+
+            pub fn iter_mut(&mut self) -> wrapped_slab::slab::IterMut<'_, #element_name> {
+                self.0.iter_mut()
+            }
         }
     };
 

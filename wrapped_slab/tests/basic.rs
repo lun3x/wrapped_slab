@@ -1,6 +1,6 @@
 use wrapped_slab::WrappedSlab;
 
-#[derive(WrappedSlab)]
+#[derive(WrappedSlab, PartialEq, Debug)]
 struct TestUnitStruct(String);
 
 #[test]
@@ -23,10 +23,16 @@ fn test_unit_struct() {
     let next_key: TestUnitStructKey = next_entry.key();
     let next_entry_ref: &mut TestUnitStruct =
         next_entry.insert(TestUnitStruct(format!("{next_key:?}")));
-    assert_eq!(next_entry_ref.0, format!("{next_key:?}"))
+    assert_eq!(next_entry_ref.0, format!("{next_key:?}"));
+
+    let mut iter = slab.iter();
+    let (idx, s) = iter.next().unwrap();
+    assert_eq!(idx, 0);
+    assert_eq!(s, &TestUnitStruct("TestUnitStructKey(0)".to_string()));
+    assert_eq!(iter.next(), None);
 }
 
-#[derive(WrappedSlab)]
+#[derive(WrappedSlab, PartialEq, Debug)]
 struct TestStruct {
     field1: String,
 }
@@ -54,7 +60,18 @@ fn test_struct() {
     let next_entry_ref: &mut TestStruct = next_entry.insert(TestStruct {
         field1: format!("{next_key:?}"),
     });
-    assert_eq!(next_entry_ref.field1, format!("{next_key:?}"))
+    assert_eq!(next_entry_ref.field1, format!("{next_key:?}"));
+
+    let mut iter = slab.iter();
+    let (idx, s) = iter.next().unwrap();
+    assert_eq!(idx, 0);
+    assert_eq!(
+        s,
+        &TestStruct {
+            field1: "TestStructKey(0)".to_string()
+        }
+    );
+    assert_eq!(iter.next(), None);
 }
 
 #[derive(WrappedSlab, PartialEq, Debug)]
@@ -85,5 +102,11 @@ fn test_enum() {
     assert_eq!(
         next_entry_ref,
         &mut TestEnum::VariantOne(format!("{next_key:?}"))
-    )
+    );
+
+    let mut iter = slab.iter();
+    let (idx, s) = iter.next().unwrap();
+    assert_eq!(idx, 0);
+    assert_eq!(s, &TestEnum::VariantOne("TestEnumKey(0)".to_string()));
+    assert_eq!(iter.next(), None);
 }
