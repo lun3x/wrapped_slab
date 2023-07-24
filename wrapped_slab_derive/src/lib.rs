@@ -110,6 +110,20 @@ pub fn wrapped_slab_derive(input: proc_macro::TokenStream) -> proc_macro::TokenS
             }
         }
 
+        impl std::ops::Index<#key_name> for #slab_name {
+            type Output = #element_name;
+
+            fn index(&self, key: #key_name) -> &#element_name {
+                self.0.index(key.0)
+            }
+        }
+
+        impl std::ops::IndexMut<#key_name> for #slab_name {
+            fn index_mut(&mut self, key: #key_name) -> &mut #element_name {
+                self.0.index_mut(key.0)
+            }
+        }
+
         impl #slab_name {
             pub const fn new() -> Self {
                 Self(wrapped_slab::slab::Slab::new())

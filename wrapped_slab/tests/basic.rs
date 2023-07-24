@@ -178,3 +178,18 @@ fn test_drain() {
 
     assert_eq!(slab.len(), 0);
 }
+
+#[test]
+fn test_index() {
+    let mut slab = TestEnumSlab::with_capacity(32);
+    slab.reserve(64);
+    assert_eq!(slab.capacity(), 64);
+
+    slab.insert(TestEnum::VariantTwo);
+
+    let s = &slab[TestEnumKey(0)];
+    assert_eq!(s, &TestEnum::VariantTwo);
+
+    let s = &mut slab[TestEnumKey(0)];
+    assert_eq!(s, &mut TestEnum::VariantTwo);
+}
