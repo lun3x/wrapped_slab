@@ -17,6 +17,7 @@ pub fn wrapped_slab_derive(input: proc_macro::TokenStream) -> proc_macro::TokenS
     let key_name = format_ident!("{element_name}Key");
     let iter_name = format_ident!("{element_name}Iter");
     let iter_mut_name = format_ident!("{element_name}IterMut");
+    let into_iter_name = format_ident!("{element_name}IntoIter");
 
     let expanded = quote! {
         #[derive(Default)]
@@ -55,6 +56,20 @@ pub fn wrapped_slab_derive(input: proc_macro::TokenStream) -> proc_macro::TokenS
 
         impl<'a> Iterator for #iter_mut_name<'a> {
             type Item = (#key_name, &'a mut #element_name);
+
+            fn next(&mut self) -> Option<Self::Item> {
+                self.0.next().map(|(key, val)| (#key_name(key), val))
+            }
+
+            fn size_hint(&self) -> (usize, Option<usize>) {
+                self.0.size_hint()
+            }
+        }
+
+        struct #into_iter_name(wrapped_slab::slab::IntoIter<#element_name>);
+
+        impl Iterator for #into_iter_name {
+            type Item = (#key_name, #element_name);
 
             fn next(&mut self) -> Option<Self::Item> {
                 self.0.next().map(|(key, val)| (#key_name(key), val))
@@ -160,6 +175,10 @@ pub fn wrapped_slab_derive(input: proc_macro::TokenStream) -> proc_macro::TokenS
 
             pub fn iter_mut(&mut self) -> #iter_mut_name<'_> {
                 #iter_mut_name(self.0.iter_mut())
+            }
+
+            pub fn into_iter(self) -> #into_iter_name {
+                #into_iter_name(self.0.into_iter())
             }
         }
     };

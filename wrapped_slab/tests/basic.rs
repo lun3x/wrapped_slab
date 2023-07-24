@@ -37,6 +37,12 @@ fn test_unit_struct() {
     assert_eq!(idx, TestUnitStructKey(0));
     assert_eq!(s, &TestUnitStruct("modified".to_string()));
     assert_eq!(iter.next(), None);
+
+    let mut iter = slab.into_iter();
+    let (idx, s) = iter.next().unwrap();
+    assert_eq!(idx, TestUnitStructKey(0));
+    assert_eq!(s, TestUnitStruct("modified".to_string()));
+    assert_eq!(iter.next(), None);
 }
 
 #[derive(WrappedSlab, PartialEq, Debug)]
@@ -91,6 +97,17 @@ fn test_struct() {
         }
     );
     assert_eq!(iter.next(), None);
+
+    let mut iter = slab.into_iter();
+    let (idx, s) = iter.next().unwrap();
+    assert_eq!(idx, TestStructKey(0));
+    assert_eq!(
+        s,
+        TestStruct {
+            field1: "modified".to_string()
+        }
+    );
+    assert_eq!(iter.next(), None);
 }
 
 #[derive(WrappedSlab, PartialEq, Debug)]
@@ -135,5 +152,11 @@ fn test_enum() {
     let (idx, s) = iter.next().unwrap();
     assert_eq!(idx, TestEnumKey(0));
     assert_eq!(s, &TestEnum::VariantTwo);
+    assert_eq!(iter.next(), None);
+
+    let mut iter = slab.into_iter();
+    let (idx, s) = iter.next().unwrap();
+    assert_eq!(idx, TestEnumKey(0));
+    assert_eq!(s, TestEnum::VariantTwo);
     assert_eq!(iter.next(), None);
 }
