@@ -18,31 +18,6 @@ fn test_unit_struct() {
     assert_eq!(val.0, "testing");
 
     assert_eq!(slab.len(), 0);
-
-    let next_entry: TestUnitStructVacantEntry = slab.vacant_entry();
-    let next_key: TestUnitStructKey = next_entry.key();
-    let next_entry_ref: &mut TestUnitStruct =
-        next_entry.insert(TestUnitStruct(format!("{next_key:?}")));
-    assert_eq!(next_entry_ref.0, format!("{next_key:?}"));
-
-    let mut iter = slab.iter_mut();
-    let (idx, s) = iter.next().unwrap();
-    assert_eq!(idx, TestUnitStructKey(0));
-    assert_eq!(s, &mut TestUnitStruct("TestUnitStructKey(0)".to_string()));
-    s.0 = "modified".to_string();
-    assert_eq!(iter.next(), None);
-
-    let mut iter = slab.iter();
-    let (idx, s) = iter.next().unwrap();
-    assert_eq!(idx, TestUnitStructKey(0));
-    assert_eq!(s, &TestUnitStruct("modified".to_string()));
-    assert_eq!(iter.next(), None);
-
-    let mut iter = slab.into_iter();
-    let (idx, s) = iter.next().unwrap();
-    assert_eq!(idx, TestUnitStructKey(0));
-    assert_eq!(s, TestUnitStruct("modified".to_string()));
-    assert_eq!(iter.next(), None);
 }
 
 #[derive(WrappedSlab, PartialEq, Debug)]
@@ -67,47 +42,6 @@ fn test_struct() {
     assert_eq!(val.field1, "testing");
 
     assert_eq!(slab.len(), 0);
-
-    let next_entry: TestStructVacantEntry = slab.vacant_entry();
-    let next_key: TestStructKey = next_entry.key();
-    let next_entry_ref: &mut TestStruct = next_entry.insert(TestStruct {
-        field1: format!("{next_key:?}"),
-    });
-    assert_eq!(next_entry_ref.field1, format!("{next_key:?}"));
-
-    let mut iter = slab.iter_mut();
-    let (idx, s) = iter.next().unwrap();
-    assert_eq!(idx, TestStructKey(0));
-    assert_eq!(
-        s,
-        &mut TestStruct {
-            field1: "TestStructKey(0)".to_string()
-        }
-    );
-    s.field1 = "modified".to_string();
-    assert_eq!(iter.next(), None);
-
-    let mut iter = slab.iter();
-    let (idx, s) = iter.next().unwrap();
-    assert_eq!(idx, TestStructKey(0));
-    assert_eq!(
-        s,
-        &TestStruct {
-            field1: "modified".to_string()
-        }
-    );
-    assert_eq!(iter.next(), None);
-
-    let mut iter = slab.into_iter();
-    let (idx, s) = iter.next().unwrap();
-    assert_eq!(idx, TestStructKey(0));
-    assert_eq!(
-        s,
-        TestStruct {
-            field1: "modified".to_string()
-        }
-    );
-    assert_eq!(iter.next(), None);
 }
 
 #[derive(WrappedSlab, PartialEq, Debug)]
@@ -131,6 +65,12 @@ fn test_enum() {
     assert_eq!(val, TestEnum::VariantOne("testing".into()));
 
     assert_eq!(slab.len(), 0);
+}
+
+#[test]
+fn test_vacant_entry() {
+    let mut slab = TestEnumSlab::default();
+    slab.insert(TestEnum::VariantOne("testing".into()));
 
     let next_entry: TestEnumVacantEntry = slab.vacant_entry();
     let next_key: TestEnumKey = next_entry.key();
@@ -140,11 +80,17 @@ fn test_enum() {
         next_entry_ref,
         &mut TestEnum::VariantOne(format!("{next_key:?}"))
     );
+}
+
+#[test]
+fn test_iter() {
+    let mut slab = TestEnumSlab::default();
+    slab.insert(TestEnum::VariantOne("testing".into()));
 
     let mut iter = slab.iter_mut();
     let (idx, s) = iter.next().unwrap();
     assert_eq!(idx, TestEnumKey(0));
-    assert_eq!(s, &mut TestEnum::VariantOne("TestEnumKey(0)".to_string()));
+    assert_eq!(s, &mut TestEnum::VariantOne("testing".to_string()));
     *s = TestEnum::VariantTwo;
     assert_eq!(iter.next(), None);
 
