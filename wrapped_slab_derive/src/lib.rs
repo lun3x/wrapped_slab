@@ -38,6 +38,7 @@ pub fn wrapped_slab_derive(input: proc_macro::TokenStream) -> proc_macro::TokenS
             }
         }
 
+        #[derive(Debug)]
         struct #iter_name<'a>(wrapped_slab::slab::Iter<'a, #element_name>);
 
         impl<'a> Iterator for #iter_name<'a> {
@@ -52,6 +53,7 @@ pub fn wrapped_slab_derive(input: proc_macro::TokenStream) -> proc_macro::TokenS
             }
         }
 
+        #[derive(Debug)]
         struct #iter_mut_name<'a>(wrapped_slab::slab::IterMut<'a, #element_name>);
 
         impl<'a> Iterator for #iter_mut_name<'a> {
@@ -66,6 +68,7 @@ pub fn wrapped_slab_derive(input: proc_macro::TokenStream) -> proc_macro::TokenS
             }
         }
 
+        #[derive(Debug)]
         struct #into_iter_name(wrapped_slab::slab::IntoIter<#element_name>);
 
         impl Iterator for #into_iter_name {
@@ -77,6 +80,33 @@ pub fn wrapped_slab_derive(input: proc_macro::TokenStream) -> proc_macro::TokenS
 
             fn size_hint(&self) -> (usize, Option<usize>) {
                 self.0.size_hint()
+            }
+        }
+
+        impl IntoIterator for #slab_name {
+            type Item = (#key_name, #element_name);
+            type IntoIter = #into_iter_name;
+
+            fn into_iter(self) -> Self::IntoIter {
+                #into_iter_name(self.0.into_iter())
+            }
+        }
+
+        impl<'a> IntoIterator for &'a #slab_name {
+            type Item = (#key_name, &'a #element_name);
+            type IntoIter = #iter_name<'a>;
+
+            fn into_iter(self) -> Self::IntoIter {
+                self.iter()
+            }
+        }
+
+        impl<'a> IntoIterator for &'a mut #slab_name {
+            type Item = (#key_name, &'a mut #element_name);
+            type IntoIter = #iter_mut_name<'a>;
+
+            fn into_iter(self) -> Self::IntoIter {
+                self.iter_mut()
             }
         }
 
@@ -175,10 +205,6 @@ pub fn wrapped_slab_derive(input: proc_macro::TokenStream) -> proc_macro::TokenS
 
             pub fn iter_mut(&mut self) -> #iter_mut_name<'_> {
                 #iter_mut_name(self.0.iter_mut())
-            }
-
-            pub fn into_iter(self) -> #into_iter_name {
-                #into_iter_name(self.0.into_iter())
             }
         }
     };
