@@ -23,6 +23,7 @@ pub fn wrapped_slab_derive(input: proc_macro::TokenStream) -> proc_macro::TokenS
         #[derive(Default)]
         #element_vis struct #slab_name(wrapped_slab::slab::Slab<#element_name>);
 
+        #[derive(Debug)]
         #element_vis struct #vacant_entry_name<'a>(wrapped_slab::slab::VacantEntry<'a, #element_name>);
 
         #[derive(Debug, Default, PartialEq, Eq, PartialOrd, Ord, Hash, Clone, Copy)]
@@ -59,6 +60,20 @@ pub fn wrapped_slab_derive(input: proc_macro::TokenStream) -> proc_macro::TokenS
             }
         }
 
+        impl DoubleEndedIterator for #iter_name<'_> {
+            fn next_back(&mut self) -> Option<Self::Item> {
+                self.0.next_back().map(|(key, val)| (#key_name(key), val))
+            }
+        }
+
+        impl ExactSizeIterator for #iter_name<'_> {
+            fn len(&self) -> usize {
+                self.0.len()
+            }
+        }
+
+        impl core::iter::FusedIterator for #iter_name<'_> {}
+
         impl<'a> Iterator for #iter_mut_name<'a> {
             type Item = (#key_name, &'a mut #element_name);
 
@@ -71,6 +86,20 @@ pub fn wrapped_slab_derive(input: proc_macro::TokenStream) -> proc_macro::TokenS
             }
         }
 
+        impl DoubleEndedIterator for #iter_mut_name<'_> {
+            fn next_back(&mut self) -> Option<Self::Item> {
+                self.0.next_back().map(|(key, val)| (#key_name(key), val))
+            }
+        }
+
+        impl ExactSizeIterator for #iter_mut_name<'_> {
+            fn len(&self) -> usize {
+                self.0.len()
+            }
+        }
+
+        impl core::iter::FusedIterator for #iter_mut_name<'_> {}
+
         impl Iterator for #into_iter_name {
             type Item = (#key_name, #element_name);
 
@@ -82,6 +111,20 @@ pub fn wrapped_slab_derive(input: proc_macro::TokenStream) -> proc_macro::TokenS
                 self.0.size_hint()
             }
         }
+
+        impl DoubleEndedIterator for #into_iter_name {
+            fn next_back(&mut self) -> Option<Self::Item> {
+                self.0.next_back().map(|(key, val)| (#key_name(key), val))
+            }
+        }
+
+        impl ExactSizeIterator for #into_iter_name {
+            fn len(&self) -> usize {
+                self.0.len()
+            }
+        }
+
+        impl core::iter::FusedIterator for #into_iter_name {}
 
         impl<'a> IntoIterator for &'a #slab_name {
             type Item = (#key_name, &'a #element_name);
