@@ -15,6 +15,8 @@ pub fn wrapped_slab_derive(input: proc_macro::TokenStream) -> proc_macro::TokenS
     let slab_name = format_ident!("{element_name}Slab");
     let vacant_entry_name = format_ident!("{element_name}VacantEntry");
     let key_name = format_ident!("{element_name}Key");
+    let iter_name = format_ident!("{element_name}Iter");
+    let iter_mut_name = format_ident!("{element_name}IterMut");
 
     let expanded = quote! {
         #[derive(Default)]
@@ -32,6 +34,34 @@ pub fn wrapped_slab_derive(input: proc_macro::TokenStream) -> proc_macro::TokenS
 
             pub fn insert(self, val: #element_name) -> &'a mut #element_name {
                 self.0.insert(val)
+            }
+        }
+
+        struct #iter_name<'a>(wrapped_slab::slab::Iter<'a, #element_name>);
+
+        impl<'a> Iterator for #iter_name<'a> {
+            type Item = (#key_name, &'a #element_name);
+
+            fn next(&mut self) -> Option<Self::Item> {
+                self.0.next().map(|(key, val)| (#key_name(key), val))
+            }
+
+            fn size_hint(&self) -> (usize, Option<usize>) {
+                self.0.size_hint()
+            }
+        }
+
+        struct #iter_mut_name<'a>(wrapped_slab::slab::IterMut<'a, #element_name>);
+
+        impl<'a> Iterator for #iter_mut_name<'a> {
+            type Item = (#key_name, &'a mut #element_name);
+
+            fn next(&mut self) -> Option<Self::Item> {
+                self.0.next().map(|(key, val)| (#key_name(key), val))
+            }
+
+            fn size_hint(&self) -> (usize, Option<usize>) {
+                self.0.size_hint()
             }
         }
 
@@ -124,12 +154,12 @@ pub fn wrapped_slab_derive(input: proc_macro::TokenStream) -> proc_macro::TokenS
                 self.0.contains(key.0)
             }
 
-            pub fn iter(&self) -> wrapped_slab::slab::Iter<'_, #element_name> {
-                self.0.iter()
+            pub fn iter(&self) -> #iter_name<'_> {
+                #iter_name(self.0.iter())
             }
 
-            pub fn iter_mut(&mut self) -> wrapped_slab::slab::IterMut<'_, #element_name> {
-                self.0.iter_mut()
+            pub fn iter_mut(&mut self) -> #iter_mut_name<'_> {
+                #iter_mut_name(self.0.iter_mut())
             }
         }
     };

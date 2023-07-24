@@ -25,10 +25,17 @@ fn test_unit_struct() {
         next_entry.insert(TestUnitStruct(format!("{next_key:?}")));
     assert_eq!(next_entry_ref.0, format!("{next_key:?}"));
 
+    let mut iter = slab.iter_mut();
+    let (idx, s) = iter.next().unwrap();
+    assert_eq!(idx, TestUnitStructKey(0));
+    assert_eq!(s, &mut TestUnitStruct("TestUnitStructKey(0)".to_string()));
+    s.0 = "modified".to_string();
+    assert_eq!(iter.next(), None);
+
     let mut iter = slab.iter();
     let (idx, s) = iter.next().unwrap();
-    assert_eq!(idx, 0);
-    assert_eq!(s, &TestUnitStruct("TestUnitStructKey(0)".to_string()));
+    assert_eq!(idx, TestUnitStructKey(0));
+    assert_eq!(s, &TestUnitStruct("modified".to_string()));
     assert_eq!(iter.next(), None);
 }
 
@@ -62,13 +69,25 @@ fn test_struct() {
     });
     assert_eq!(next_entry_ref.field1, format!("{next_key:?}"));
 
+    let mut iter = slab.iter_mut();
+    let (idx, s) = iter.next().unwrap();
+    assert_eq!(idx, TestStructKey(0));
+    assert_eq!(
+        s,
+        &mut TestStruct {
+            field1: "TestStructKey(0)".to_string()
+        }
+    );
+    s.field1 = "modified".to_string();
+    assert_eq!(iter.next(), None);
+
     let mut iter = slab.iter();
     let (idx, s) = iter.next().unwrap();
-    assert_eq!(idx, 0);
+    assert_eq!(idx, TestStructKey(0));
     assert_eq!(
         s,
         &TestStruct {
-            field1: "TestStructKey(0)".to_string()
+            field1: "modified".to_string()
         }
     );
     assert_eq!(iter.next(), None);
@@ -77,6 +96,7 @@ fn test_struct() {
 #[derive(WrappedSlab, PartialEq, Debug)]
 enum TestEnum {
     VariantOne(String),
+    VariantTwo,
 }
 
 #[test]
@@ -104,9 +124,16 @@ fn test_enum() {
         &mut TestEnum::VariantOne(format!("{next_key:?}"))
     );
 
+    let mut iter = slab.iter_mut();
+    let (idx, s) = iter.next().unwrap();
+    assert_eq!(idx, TestEnumKey(0));
+    assert_eq!(s, &mut TestEnum::VariantOne("TestEnumKey(0)".to_string()));
+    *s = TestEnum::VariantTwo;
+    assert_eq!(iter.next(), None);
+
     let mut iter = slab.iter();
     let (idx, s) = iter.next().unwrap();
-    assert_eq!(idx, 0);
-    assert_eq!(s, &TestEnum::VariantOne("TestEnumKey(0)".to_string()));
+    assert_eq!(idx, TestEnumKey(0));
+    assert_eq!(s, &TestEnum::VariantTwo);
     assert_eq!(iter.next(), None);
 }
