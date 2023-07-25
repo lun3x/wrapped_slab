@@ -1,6 +1,6 @@
 use wrapped_slab::WrappedSlab;
 
-#[derive(WrappedSlab, PartialEq, Debug)]
+#[derive(WrappedSlab, PartialEq)]
 struct TestUnitStruct(String);
 
 #[test]

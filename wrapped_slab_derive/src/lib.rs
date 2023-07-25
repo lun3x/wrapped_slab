@@ -23,7 +23,6 @@ pub fn wrapped_slab_derive(input: proc_macro::TokenStream) -> proc_macro::TokenS
         #[derive(Default)]
         #element_vis struct #slab_name(wrapped_slab::slab::Slab<#element_name>);
 
-        #[derive(Debug)]
         #element_vis struct #vacant_entry_name<'a>(wrapped_slab::slab::VacantEntry<'a, #element_name>);
 
         #[derive(Debug, Default, PartialEq, Eq, PartialOrd, Ord, Hash, Clone, Copy)]
@@ -39,13 +38,10 @@ pub fn wrapped_slab_derive(input: proc_macro::TokenStream) -> proc_macro::TokenS
             }
         }
 
-        #[derive(Debug)]
         #element_vis struct #iter_name<'a>(wrapped_slab::slab::Iter<'a, #element_name>);
 
-        #[derive(Debug)]
         #element_vis struct #iter_mut_name<'a>(wrapped_slab::slab::IterMut<'a, #element_name>);
 
-        #[derive(Debug)]
         #element_vis struct #into_iter_name(wrapped_slab::slab::IntoIter<#element_name>);
 
         impl<'a> Iterator for #iter_name<'a> {
