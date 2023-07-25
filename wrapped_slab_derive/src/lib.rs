@@ -28,6 +28,12 @@ pub fn wrapped_slab_derive(input: proc_macro::TokenStream) -> proc_macro::TokenS
         #[derive(Debug, Default, PartialEq, Eq, PartialOrd, Ord, Hash, Clone, Copy)]
         #element_vis struct #key_name(usize);
 
+        impl ::core::fmt::Display for #key_name {
+            fn fmt(&self, f: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
+                self.0.fmt(f)
+            }
+        }
+
         impl<'a> #vacant_entry_name<'a> {
             pub fn key(&self) -> #key_name {
                 #key_name(self.0.key())
@@ -68,7 +74,7 @@ pub fn wrapped_slab_derive(input: proc_macro::TokenStream) -> proc_macro::TokenS
             }
         }
 
-        impl core::iter::FusedIterator for #iter_name<'_> {}
+        impl ::core::iter::FusedIterator for #iter_name<'_> {}
 
         impl<'a> Iterator for #iter_mut_name<'a> {
             type Item = (#key_name, &'a mut #element_name);
@@ -94,7 +100,7 @@ pub fn wrapped_slab_derive(input: proc_macro::TokenStream) -> proc_macro::TokenS
             }
         }
 
-        impl core::iter::FusedIterator for #iter_mut_name<'_> {}
+        impl ::core::iter::FusedIterator for #iter_mut_name<'_> {}
 
         impl Iterator for #into_iter_name {
             type Item = (#key_name, #element_name);
@@ -120,7 +126,7 @@ pub fn wrapped_slab_derive(input: proc_macro::TokenStream) -> proc_macro::TokenS
             }
         }
 
-        impl core::iter::FusedIterator for #into_iter_name {}
+        impl ::core::iter::FusedIterator for #into_iter_name {}
 
         impl<'a> IntoIterator for &'a #slab_name {
             type Item = (#key_name, &'a #element_name);
@@ -149,7 +155,7 @@ pub fn wrapped_slab_derive(input: proc_macro::TokenStream) -> proc_macro::TokenS
             }
         }
 
-        impl std::ops::Index<#key_name> for #slab_name {
+        impl ::core::ops::Index<#key_name> for #slab_name {
             type Output = #element_name;
 
             fn index(&self, key: #key_name) -> &#element_name {
@@ -157,7 +163,7 @@ pub fn wrapped_slab_derive(input: proc_macro::TokenStream) -> proc_macro::TokenS
             }
         }
 
-        impl std::ops::IndexMut<#key_name> for #slab_name {
+        impl ::core::ops::IndexMut<#key_name> for #slab_name {
             fn index_mut(&mut self, key: #key_name) -> &mut #element_name {
                 self.0.index_mut(key.0)
             }

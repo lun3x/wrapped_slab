@@ -1,3 +1,9 @@
+Version 0.2.1 (2023-07-25)
+==========================
+
+- Remove derive(Debug) from generated Iter, IterMut, VacantEntry. This was forcing all elements to implement Debug. Users can implement Debug themselves trivially if needed.
+- Add Display trait for generated keys. This will just be the same as `usize`.
+
 Version 0.2.0 (2023-07-24)
 ==========================
 
