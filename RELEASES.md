@@ -1,3 +1,8 @@
+Version 0.2.2 (2023-07-25)
+==========================
+
+- Bugfix, disambiguate the Display and Debug trait in some cases.
+
 Version 0.2.1 (2023-07-25)
 ==========================
 
