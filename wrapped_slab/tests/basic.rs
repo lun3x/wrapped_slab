@@ -75,10 +75,10 @@ fn test_vacant_entry() {
     let next_entry: TestEnumVacantEntry = slab.vacant_entry();
     let next_key: TestEnumKey = next_entry.key();
     let next_entry_ref: &mut TestEnum =
-        next_entry.insert(TestEnum::VariantOne(format!("{next_key:?}")));
+        next_entry.insert(TestEnum::VariantOne(format!("{next_key}")));
     assert_eq!(
         next_entry_ref,
-        &mut TestEnum::VariantOne(format!("{next_key:?}"))
+        &mut TestEnum::VariantOne(format!("{next_key}"))
     );
 }
 
