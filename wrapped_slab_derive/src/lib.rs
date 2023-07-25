@@ -30,7 +30,7 @@ pub fn wrapped_slab_derive(input: proc_macro::TokenStream) -> proc_macro::TokenS
 
         impl ::core::fmt::Display for #key_name {
             fn fmt(&self, f: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
-                self.0.fmt(f)
+                ::core::fmt::Display::fmt(&self.0, f)
             }
         }
 
