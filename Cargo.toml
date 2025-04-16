@@ -1,4 +1,2 @@
 [workspace]
-members=[
-    "wrapped_slab_derive", "wrapped_slab"
-]
+members = ["wrapped_slab_derive", "wrapped_slab", "wrapped_slab_expanded"]
