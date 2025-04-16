@@ -21,6 +21,26 @@ fn test_unit_struct() {
 }
 
 #[derive(WrappedSlab, PartialEq)]
+struct TestUnitConstStruct<const N: usize>([f32; N]);
+
+#[test]
+fn test_unit_const_struct() {
+    let mut slab: TestUnitConstStructSlab<1> = TestUnitConstStructSlab::with_capacity(32);
+    slab.reserve(64);
+    assert_eq!(slab.capacity(), 64);
+
+    let key: TestUnitConstStructKey = slab.insert(TestUnitConstStruct([42.0]));
+
+    let val: Option<&TestUnitConstStruct<1>> = slab.get(key);
+    assert_eq!(val.unwrap().0, [42.0]);
+
+    let val = slab.remove(key);
+    assert_eq!(val.0, [42.0]);
+
+    assert_eq!(slab.len(), 0);
+}
+
+#[derive(WrappedSlab, PartialEq)]
 struct TestUnitParamStruct<A: Default>(A);
 
 #[test]
@@ -58,6 +78,26 @@ fn test_tuple_struct() {
 
     let val = slab.remove(key);
     assert_eq!(val.0, ("testing", 42.0));
+
+    assert_eq!(slab.len(), 0);
+}
+
+#[derive(WrappedSlab, PartialEq)]
+struct TestTupleConstStruct<A, const N: usize>((A, [f32; N]));
+
+#[test]
+fn test_tuple_const_struct() {
+    let mut slab = TestTupleConstStructSlab::<&str, 1>::with_capacity(32);
+    slab.reserve(64);
+    assert_eq!(slab.capacity(), 64);
+
+    let key: TestTupleConstStructKey = slab.insert(TestTupleConstStruct(("testing", [42.0])));
+
+    let val: Option<&TestTupleConstStruct<&str, 1>> = slab.get(key);
+    assert_eq!(val.unwrap().0, ("testing", [42.0]));
+
+    let val = slab.remove(key);
+    assert_eq!(val.0, ("testing", [42.0]));
 
     assert_eq!(slab.len(), 0);
 }
