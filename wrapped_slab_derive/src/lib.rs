@@ -56,7 +56,7 @@ pub fn wrapped_slab_derive(input: proc_macro::TokenStream) -> proc_macro::TokenS
             }
         }
 
-        impl #impls_extra #vacant_entry_name #types_extra {
+        impl #impls_extra #vacant_entry_name #types_extra #where_clause_extra {
             pub fn key(&self) -> #key_name {
                 #key_name(self.0.key())
             }
@@ -72,7 +72,7 @@ pub fn wrapped_slab_derive(input: proc_macro::TokenStream) -> proc_macro::TokenS
 
         #element_vis struct #into_iter_name #types (wrapped_slab::slab::IntoIter<#element_name #types>);
 
-        impl #impls_extra Iterator for #iter_name #types_extra {
+        impl #impls_extra Iterator for #iter_name #types_extra #where_clause_extra {
             type Item = (#key_name, &'a #element_name #types);
 
             fn next(&mut self) -> Option<Self::Item> {
@@ -84,21 +84,21 @@ pub fn wrapped_slab_derive(input: proc_macro::TokenStream) -> proc_macro::TokenS
             }
         }
 
-        impl #impls DoubleEndedIterator for #iter_name #types_empty {
+        impl #impls DoubleEndedIterator for #iter_name #types_empty #where_clause {
             fn next_back(&mut self) -> Option<Self::Item> {
                 self.0.next_back().map(|(key, val)| (#key_name(key), val))
             }
         }
 
-        impl #impls ExactSizeIterator for #iter_name #types_empty {
+        impl #impls ExactSizeIterator for #iter_name #types_empty #where_clause {
             fn len(&self) -> usize {
                 self.0.len()
             }
         }
 
-        impl #impls ::core::iter::FusedIterator for #iter_name #types_empty {}
+        impl #impls ::core::iter::FusedIterator for #iter_name #types_empty #where_clause {}
 
-        impl #impls_extra Iterator for #iter_mut_name #types_extra {
+        impl #impls_extra Iterator for #iter_mut_name #types_extra #where_clause_extra {
             type Item = (#key_name, &'a mut #element_name #types);
 
             fn next(&mut self) -> Option<Self::Item> {
@@ -110,21 +110,21 @@ pub fn wrapped_slab_derive(input: proc_macro::TokenStream) -> proc_macro::TokenS
             }
         }
 
-        impl #impls DoubleEndedIterator for #iter_mut_name #types_empty {
+        impl #impls DoubleEndedIterator for #iter_mut_name #types_empty #where_clause {
             fn next_back(&mut self) -> Option<Self::Item> {
                 self.0.next_back().map(|(key, val)| (#key_name(key), val))
             }
         }
 
-        impl #impls ExactSizeIterator for #iter_mut_name #types_empty {
+        impl #impls ExactSizeIterator for #iter_mut_name #types_empty #where_clause {
             fn len(&self) -> usize {
                 self.0.len()
             }
         }
 
-        impl #impls ::core::iter::FusedIterator for #iter_mut_name #types_empty {}
+        impl #impls ::core::iter::FusedIterator for #iter_mut_name #types_empty #where_clause {}
 
-        impl #impls Iterator for #into_iter_name #types {
+        impl #impls Iterator for #into_iter_name #types #where_clause {
             type Item = (#key_name, #element_name #types);
 
             fn next(&mut self) -> Option<Self::Item> {
@@ -136,7 +136,7 @@ pub fn wrapped_slab_derive(input: proc_macro::TokenStream) -> proc_macro::TokenS
             }
         }
 
-        impl #impls DoubleEndedIterator for #into_iter_name #types {
+        impl #impls DoubleEndedIterator for #into_iter_name #types #where_clause {
             fn next_back(&mut self) -> Option<Self::Item> {
                 self.0.next_back().map(|(key, val)| (#key_name(key), val))
             }
@@ -148,9 +148,9 @@ pub fn wrapped_slab_derive(input: proc_macro::TokenStream) -> proc_macro::TokenS
             }
         }
 
-        impl #impls ::core::iter::FusedIterator for #into_iter_name #types {}
+        impl #impls ::core::iter::FusedIterator for #into_iter_name #types #where_clause {}
 
-        impl #impls_extra IntoIterator for &'a #slab_name #types {
+        impl #impls_extra IntoIterator for &'a #slab_name #types #where_clause_extra {
             type Item = (#key_name, &'a #element_name #types);
             type IntoIter = #iter_name #types_extra;
 
@@ -159,7 +159,7 @@ pub fn wrapped_slab_derive(input: proc_macro::TokenStream) -> proc_macro::TokenS
             }
         }
 
-        impl #impls_extra IntoIterator for &'a mut #slab_name #types {
+        impl #impls_extra IntoIterator for &'a mut #slab_name #types #where_clause_extra {
             type Item = (#key_name, &'a mut #element_name #types);
             type IntoIter = #iter_mut_name #types_extra;
 
@@ -168,7 +168,7 @@ pub fn wrapped_slab_derive(input: proc_macro::TokenStream) -> proc_macro::TokenS
             }
         }
 
-        impl #impls IntoIterator for #slab_name #types {
+        impl #impls IntoIterator for #slab_name #types #where_clause {
             type Item = (#key_name, #element_name #types);
             type IntoIter = #into_iter_name #types;
 
@@ -177,7 +177,7 @@ pub fn wrapped_slab_derive(input: proc_macro::TokenStream) -> proc_macro::TokenS
             }
         }
 
-        impl #impls ::core::ops::Index<#key_name> for #slab_name #types {
+        impl #impls ::core::ops::Index<#key_name> for #slab_name #types #where_clause {
             type Output = #element_name #types;
 
             fn index(&self, key: #key_name) -> &#element_name #types {
@@ -185,13 +185,13 @@ pub fn wrapped_slab_derive(input: proc_macro::TokenStream) -> proc_macro::TokenS
             }
         }
 
-        impl #impls ::core::ops::IndexMut<#key_name> for #slab_name #types {
+        impl #impls ::core::ops::IndexMut<#key_name> for #slab_name #types #where_clause {
             fn index_mut(&mut self, key: #key_name) -> &mut #element_name #types {
                 self.0.index_mut(key.0)
             }
         }
 
-        impl #impls #slab_name #types {
+        impl #impls #slab_name #types #where_clause {
             pub const fn new() -> Self {
                 Self(wrapped_slab::slab::Slab::new())
             }
