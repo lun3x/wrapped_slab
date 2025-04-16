@@ -1,3 +1,8 @@
+Version 0.3.0 (2025-04-16)
+==========================
+
+- Support elements with generic and const generic parameters
+
 Version 0.2.2 (2023-07-25)
 ==========================
 
