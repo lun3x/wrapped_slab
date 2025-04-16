@@ -21,6 +21,27 @@ fn test_unit_struct() {
 }
 
 #[derive(WrappedSlab, PartialEq)]
+struct TestUnitParamStruct<A: Default>(A);
+
+#[test]
+fn test_unit_param_struct() {
+    let mut slab: TestUnitParamStructSlab<&str> =
+        TestUnitParamStructSlab::<&str>::with_capacity(32);
+    slab.reserve(64);
+    assert_eq!(slab.capacity(), 64);
+
+    let key: TestUnitParamStructKey = slab.insert(TestUnitParamStruct("testing"));
+
+    let val: Option<&TestUnitParamStruct<&str>> = slab.get(key);
+    assert_eq!(val.unwrap().0, "testing");
+
+    let val = slab.remove(key);
+    assert_eq!(val.0, "testing");
+
+    assert_eq!(slab.len(), 0);
+}
+
+#[derive(WrappedSlab, PartialEq)]
 struct TestTupleStruct<A, B>((A, B));
 
 #[test]

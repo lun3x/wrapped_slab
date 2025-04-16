@@ -43,9 +43,9 @@ pub fn wrapped_slab_derive(input: proc_macro::TokenStream) -> proc_macro::TokenS
 
     let expanded = quote! {
         #[derive(Default)]
-        #element_vis struct #slab_name #types(wrapped_slab::slab::Slab<#element_name #types>);
+        #element_vis struct #slab_name #impls(wrapped_slab::slab::Slab<#element_name #types>);
 
-        #element_vis struct #vacant_entry_name #types_extra(wrapped_slab::slab::VacantEntry<'a, #element_name #types>);
+        #element_vis struct #vacant_entry_name #impls_extra(wrapped_slab::slab::VacantEntry<'a, #element_name #types>);
 
         #[derive(Debug, Default, PartialEq, Eq, PartialOrd, Ord, Hash, Clone, Copy)]
         #element_vis struct #key_name(usize);
@@ -66,11 +66,11 @@ pub fn wrapped_slab_derive(input: proc_macro::TokenStream) -> proc_macro::TokenS
             }
         }
 
-        #element_vis struct #iter_name #types_extra (wrapped_slab::slab::Iter<'a, #element_name #types>);
+        #element_vis struct #iter_name #impls_extra (wrapped_slab::slab::Iter<'a, #element_name #types>);
 
-        #element_vis struct #iter_mut_name #types_extra (wrapped_slab::slab::IterMut<'a, #element_name #types>);
+        #element_vis struct #iter_mut_name #impls_extra (wrapped_slab::slab::IterMut<'a, #element_name #types>);
 
-        #element_vis struct #into_iter_name #types (wrapped_slab::slab::IntoIter<#element_name #types>);
+        #element_vis struct #into_iter_name #impls (wrapped_slab::slab::IntoIter<#element_name #types>);
 
         impl #impls_extra Iterator for #iter_name #types_extra #where_clause_extra {
             type Item = (#key_name, &'a #element_name #types);
