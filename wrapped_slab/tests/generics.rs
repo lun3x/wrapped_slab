@@ -20,6 +20,15 @@ fn test_unit_struct() {
     assert_eq!(slab.len(), 0);
 }
 
+// #[derive(Default)]
+struct NonDefaultStruct {}
+
+#[test]
+fn test_non_default_member_struct() {
+    // We should still be able to create a Default initialised slab even when the generic type does not implement Default
+    let _slab: TestUnitStructSlab<NonDefaultStruct> = Default::default();
+}
+
 #[derive(WrappedSlab, PartialEq)]
 struct TestUnitConstStruct<const N: usize>([f32; N]);
 

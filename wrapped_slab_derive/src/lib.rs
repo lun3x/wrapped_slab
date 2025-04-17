@@ -42,10 +42,15 @@ pub fn wrapped_slab_derive(input: proc_macro::TokenStream) -> proc_macro::TokenS
     let into_iter_name = format_ident!("{element_name}IntoIter");
 
     let expanded = quote! {
-        #[derive(Default)]
-        #element_vis struct #slab_name #impls(wrapped_slab::slab::Slab<#element_name #types>);
+        #element_vis struct #slab_name #impls (wrapped_slab::slab::Slab<#element_name #types>);
 
-        #element_vis struct #vacant_entry_name #impls_extra(wrapped_slab::slab::VacantEntry<'a, #element_name #types>);
+        impl #impls Default for #slab_name #types #where_clause {
+            fn default() -> Self {
+                Self(Default::default())
+            }
+        }
+
+        #element_vis struct #vacant_entry_name #impls_extra (wrapped_slab::slab::VacantEntry<'a, #element_name #types>);
 
         #[derive(Debug, Default, PartialEq, Eq, PartialOrd, Ord, Hash, Clone, Copy)]
         #element_vis struct #key_name(usize);
