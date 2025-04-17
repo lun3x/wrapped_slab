@@ -1,6 +1,6 @@
 [package]
 name = "wrapped_slab"
-version = "0.3.0"
+version = "0.4.0"
 edition = "2021"
 authors = ["Louis Wyborn <louiswyborn@gmail.com>"]
 rust-version = "1.62"
@@ -14,7 +14,7 @@ readme = "README.md"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-wrapped_slab_derive = { version = "0.3.0", path = "../wrapped_slab_derive" }
+wrapped_slab_derive = { version = "0.4.0", path = "../wrapped_slab_derive" }
 
 # Used as the backing store of all the elements.
 slab = { version = "0.4" }

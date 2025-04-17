@@ -1,3 +1,8 @@
+Version 0.3.0 (2025-04-17)
+==========================
+
+- Always derive Default for WrappedSlab container even when element itself doesn't implement Default
+
 Version 0.3.0 (2025-04-16)
 ==========================
 
